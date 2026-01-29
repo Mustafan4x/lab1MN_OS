@@ -112,7 +112,7 @@ int main(){
     int target2 = arr2[getRandomIndex()];
 
     clock_t start_processing_optimized{clock()};
-    std::sort(std::begin(arr2), std::end(arr2));
+    std::sort(std::begin(arr2), std::end(arr2)); // TODO: Should I move?
     std::pair<int, int> p2{optimized_algo(arr2, target2)};
     clock_t end_processing_optimized{clock()};
 
