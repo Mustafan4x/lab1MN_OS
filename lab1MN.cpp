@@ -15,7 +15,6 @@ Lab 1 - Amdahl's Law
 #include <cmath> // For std::abs
 
 
-// TODO: INCREASE ARRAY SIZE AGAIN, PROBABLY 10K
 constexpr int ARRAY_SIZE{100'000};
 std::array<int, ARRAY_SIZE> arr1;
 std::array<int, ARRAY_SIZE> arr2;
@@ -40,7 +39,7 @@ void loadArray(std::array<int, ARRAY_SIZE>& arr){
 }
 
 // Linear Search
-const std::pair<int, int> unoptimized_algo(const std::array<int, ARRAY_SIZE> arr, int target){
+const std::pair<int, int> unoptimized_algo(const std::array<int, ARRAY_SIZE>& arr, int target){
     for(std::size_t i{}; i < ARRAY_SIZE; ++i){
         if (arr[i] == target)
             return {i, i + 1};
@@ -50,7 +49,7 @@ const std::pair<int, int> unoptimized_algo(const std::array<int, ARRAY_SIZE> arr
 }
 
 // Binary Search
-const std::pair<int, int> optimized_algo(const std::array<int, ARRAY_SIZE> arr, int target){
+const std::pair<int, int> optimized_algo(const std::array<int, ARRAY_SIZE>& arr, int target){
 
     std::size_t start{};
     std::size_t end{ARRAY_SIZE - 1};
@@ -87,10 +86,10 @@ int main(){
 
 
     // Unoptimized
-    int target1 = arr1[getRandomIndex()];
 
     clock_t start_total_unoptimized{clock()};
     loadArray(arr1);
+    int target1 = arr1[getRandomIndex()];
 
     clock_t start_processing_unoptimized{clock()};
     std::pair<int, int> p1{unoptimized_algo(arr1, target1)};
@@ -107,10 +106,10 @@ int main(){
 
 
     // Optimized, must sort first for a binary search
-    int target2 = arr2[getRandomIndex()];
 
     clock_t start_total_optimized{clock()};
     loadArray(arr2);
+    int target2 = arr2[getRandomIndex()];
 
     clock_t start_processing_optimized{clock()};
     std::sort(std::begin(arr2), std::end(arr2));
@@ -134,7 +133,7 @@ void printReport(double processing_unoptimized, double total_unoptimized, double
     std::cout << "\n--- Amdahl's Law Analysis Data ---\n";
 
     // P: Proportion of optimizable code
-    double P = processing_optimized / total_unoptimized;
+    double P = processing_unoptimized / total_unoptimized;
 
     // S: Speedup of the optimized part
     double S = processing_unoptimized / processing_optimized;
@@ -150,15 +149,15 @@ void printReport(double processing_unoptimized, double total_unoptimized, double
     std::cout << "Measured Overall Speedup: " << measured_speedup << ".\n";
     std::cout << "Theoretical Overall Speedup w/ Amdahl's Law: " << theoretical_speedup << ".\n";
 
-    std::cout << "Measured and Theoretical Overall Speedup's Percent Difference: " << (std::abs(theoretical_speedup - measured_speedup) * 2 / (theoretical_speedup + measured_speedup))<< "%.\n";
+    std::cout << "Measured and Theoretical Overall Speedup's Percent Difference: " << (std::abs(theoretical_speedup - measured_speedup) * 2 / (theoretical_speedup + measured_speedup)) * 100 << "%.\n\n";
 }
 
 // Printer for trial outcomes
 void printTimes(double processing, double total, bool isOptimized){
     isOptimized ? std::cout << "---  Running Optimized Version ---\n" : std::cout << "---  Running Unoptimized Version ---\n";
 
-    std::cout << "Processing Time: " <<  std::fixed << std::setprecision(2) << processing << " seconds.\n";
-    std::cout << "Total Time: " <<  std::fixed << std::setprecision(2) << total << " seconds.\n\n";
+    std::cout << "Processing Time: " <<  std::fixed << std::setprecision(6) << processing << " seconds.\n";
+    std::cout << "Total Time: " <<  std::fixed << std::setprecision(6) << total << " seconds.\n\n";
 }
 
 // Printer for debugging
@@ -173,6 +172,7 @@ void printArray(const std::array<int, ARRAY_SIZE>& arr, bool isSorted){
            std::cout << '\n';
 
         std::cout << i << ' ';
+        ++j;
     }
     std::cout << '\n';
 }
