@@ -56,7 +56,6 @@ const std::pair<int, int> optimized_algo(const std::array<int, ARRAY_SIZE>& arr,
 
     int iterations{};
     while(start <= end){
-
         std::size_t middle{start + (end - start) / 2};
 
         if(arr[middle] == target)
@@ -70,13 +69,12 @@ const std::pair<int, int> optimized_algo(const std::array<int, ARRAY_SIZE>& arr,
         
         ++iterations;
     }
-
     // Target not found
     return {-1, iterations};
 }
 
 int main(){
-
+    
     // Random index generator
     auto getRandomIndex = []() -> int {
         std::uniform_int_distribution arrayRange(0, ARRAY_SIZE - 1);
@@ -86,7 +84,6 @@ int main(){
 
 
     // Unoptimized
-
     clock_t start_total_unoptimized{clock()};
     loadArray(arr1);
     int target1 = arr1[getRandomIndex()];
@@ -95,8 +92,8 @@ int main(){
     std::pair<int, int> p1{unoptimized_algo(arr1, target1)};
     clock_t end_processing_unoptimized{clock()};
 
+    // Calculate total times
     clock_t end_total_unoptimized{clock()};
-
     double total_unoptimized{(static_cast<double>(end_total_unoptimized) - start_total_unoptimized) / CLOCKS_PER_SEC};
     double processing_unoptimized{(static_cast<double>(end_processing_unoptimized) - start_processing_unoptimized) / CLOCKS_PER_SEC};
 
@@ -104,30 +101,34 @@ int main(){
 
 
 
-
     // Optimized, must sort first for a binary search
-
     clock_t start_total_optimized{clock()};
     loadArray(arr2);
     int target2 = arr2[getRandomIndex()];
 
     clock_t start_processing_optimized{clock()};
-    std::sort(std::begin(arr2), std::end(arr2)); // TODO: Should I move?
+    std::sort(std::begin(arr2), std::end(arr2));
     std::pair<int, int> p2{optimized_algo(arr2, target2)};
     clock_t end_processing_optimized{clock()};
 
+    // Calculate total times
     clock_t end_total_optimized{clock()};
-
     double total_optimized{(static_cast<double>(end_total_optimized) - start_total_optimized) / CLOCKS_PER_SEC};
     double processing_optimized{(static_cast<double>(end_processing_optimized) - start_processing_optimized) / CLOCKS_PER_SEC};
 
     printTimes(processing_optimized, total_optimized, true);
 
+    // Print total summary findings
     printReport(processing_unoptimized, total_unoptimized, processing_optimized, total_optimized);
 
     return 0;
 }
 
+// Printer and debugging functions
+
+
+
+// Print total summary findings
 void printReport(double processing_unoptimized, double total_unoptimized, double processing_optimized, double total_optimized){
 
     std::cout << "\n--- Amdahl's Law Analysis Data ---\n";
@@ -152,6 +153,8 @@ void printReport(double processing_unoptimized, double total_unoptimized, double
     std::cout << "Measured and Theoretical Overall Speedup's Percent Difference: " << (std::abs(theoretical_speedup - measured_speedup) * 2 / (theoretical_speedup + measured_speedup)) * 100 << "%.\n\n";
 }
 
+
+
 // Printer for trial outcomes
 void printTimes(double processing, double total, bool isOptimized){
     isOptimized ? std::cout << "---  Running Optimized Version ---\n" : std::cout << "---  Running Unoptimized Version ---\n";
@@ -159,6 +162,8 @@ void printTimes(double processing, double total, bool isOptimized){
     std::cout << "Processing Time: " <<  std::fixed << std::setprecision(6) << processing << " seconds.\n";
     std::cout << "Total Time: " <<  std::fixed << std::setprecision(6) << total << " seconds.\n\n";
 }
+
+
 
 // Printer for debugging
 void printArray(const std::array<int, ARRAY_SIZE>& arr, bool isSorted){
@@ -176,6 +181,8 @@ void printArray(const std::array<int, ARRAY_SIZE>& arr, bool isSorted){
     }
     std::cout << '\n';
 }
+
+
 
 // Printer for search efficiency
 void printResults(const std::pair<int, int>& p, bool isOptimized){
